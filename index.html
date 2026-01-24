@@ -55,8 +55,6 @@
         .chat-btn-send { background: var(--primary); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
         .chat-btn-send:active { transform: scale(0.9); }
         .chat-btn-attach { color: #666; font-size: 20px; cursor: pointer; padding: 5px; }
-        .notification-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; display: flex; align-items: center; justify-content: center; border: 2px solid white; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
     </style>
 </head>
 <body>
@@ -81,6 +79,8 @@
                 <div class="menu-item" id="btn-approv"><i class="menu-icon fa-solid fa-user-check"></i><span>সদস্য রিকুয়েস্ট</span></div>
                 <div class="menu-item" id="btn-deposit-req"><i class="menu-icon fa-solid fa-check-double"></i><span>জমা রিকুয়েস্ট</span></div>
                 <div class="menu-item" id="btn-money-entry"><i class="menu-icon fa-solid fa-plus-circle"></i><span>টাকা এন্ট্রি</span></div>
+                <!-- New Extra Collection Button -->
+                <div class="menu-item" id="btn-extra-collection"><i class="menu-icon fa-solid fa-hand-holding-heart"></i><span>অতিরিক্ত আদায়</span></div>
             </div>
 
             <div class="section-title">ম্যানেজমেন্ট</div>
@@ -88,6 +88,8 @@
                 <div class="menu-item" id="btn-member-list"><i class="menu-icon fa-solid fa-users"></i><span>সদস্য তালিকা</span></div>
                 <div class="menu-item" id="btn-due-list"><i class="menu-icon fa-solid fa-file-invoice"></i><span>বাকি তালিকা</span></div>
                 <div class="menu-item" id="btn-deposit-list"><i class="menu-icon fa-solid fa-list-check"></i><span>জমা তালিকা</span></div>
+                <!-- New Extra Fee Setup Button -->
+                <div class="menu-item" id="btn-extra-fee-setup"><i class="menu-icon fa-solid fa-gift"></i><span>অতিরিক্ত ফি</span></div>
                 <div class="menu-item" id="btn-complaint-inbox"><div class="menu-icon" style="background:#fef2f2; color:#ef4444"><i class="fa-brands fa-whatsapp"></i></div><span>অভিযোগ বক্স</span></div>
                 <div class="menu-item" id="btn-decisions"><div class="menu-icon" style="background:#e0e7ff; color:#4f46e5"><i class="fa-solid fa-gavel"></i></div><span>সিদ্ধান্ত</span></div>
                 <div class="menu-item" id="btn-meeting-admin"><div class="menu-icon" style="background:#f3e8ff; color:#9333ea"><i class="fa-solid fa-handshake"></i></div><span>মিটিং সেটআপ</span></div>
@@ -119,7 +121,34 @@
     </div>
     
     <div id="complaint-inbox-modal" class="modal"><div class="modal-content"><i class="fa-solid fa-xmark modal-close-icon" onclick="document.getElementById('complaint-inbox-modal').style.display='none'"></i><h3 style="color:#ef4444"><i class="fa-brands fa-whatsapp"></i> ইনবক্স</h3><div id="complaint-inbox-list"></div></div></div>
-    <div id="entry-modal" class="modal"><div class="modal-content"><i class="fa-solid fa-xmark modal-close-icon" onclick="document.getElementById('entry-modal').style.display='none'"></i><h3>টাকা জমা (অ্যাডমিন)</h3><select id="entry-name"></select><div style="display:flex;gap:5px"><select id="entry-year"></select><select id="entry-month"><option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option></select></div><label style="font-size:12px">তারিখ:</label><input type="date" id="entry-date"><input type="number" id="entry-amount" placeholder="টাকা"><select id="entry-method"><option>Cash</option><option>Bkash</option><option>Nagad</option></select><textarea id="entry-note" rows="2" placeholder="মন্তব্য"></textarea><button class="modern-btn" id="btn-submit-entry">জমা দিন</button></div></div>
+    
+    <!-- Entry Modal (Fixed Amount) -->
+    <div id="entry-modal" class="modal">
+        <div class="modal-content">
+            <i class="fa-solid fa-xmark modal-close-icon" onclick="document.getElementById('entry-modal').style.display='none'"></i>
+            <h3>টাকা জমা (অ্যাডমিন)</h3>
+            <select id="entry-name"></select>
+            <div style="display:flex;gap:5px">
+                <select id="entry-year"></select>
+                <select id="entry-month">
+                    <option>January</option><option>February</option><option>March</option><option>April</option>
+                    <option>May</option><option>June</option><option>July</option><option>August</option>
+                    <option>September</option><option>October</option><option>November</option><option>December</option>
+                </select>
+            </div>
+            <label style="font-size:12px; margin-top:5px; display:block">জমার তারিখ:</label>
+            <input type="date" id="entry-date">
+            
+            <label style="font-size:12px; font-weight:bold; color:var(--primary)">নির্ধারিত মাসিক ফি:</label>
+            <!-- Readonly & Background added to indicate fixed amount -->
+            <input type="number" id="entry-amount" placeholder="টাকা (অটো)" readonly style="background:#e2e8f0; cursor:not-allowed;">
+            
+            <select id="entry-method"><option>Cash</option><option>Bkash</option><option>Nagad</option></select>
+            <textarea id="entry-note" rows="2" placeholder="মন্তব্য"></textarea>
+            <button class="modern-btn" id="btn-submit-entry">জমা দিন</button>
+        </div>
+    </div>
+
     <div id="fine-modal" class="modal"><div class="modal-content"><i class="fa-solid fa-xmark modal-close-icon" onclick="document.getElementById('fine-modal').style.display='none'"></i><h3>জরিমানা সেটিংস</h3><div style="background:#fef9c3; padding:15px; border-radius:10px; margin-bottom:20px;"><label style="font-size:13px; font-weight:bold;">মাসের শেষ তারিখ:</label><select id="fine-late-date"></select><label style="font-size:13px; font-weight:bold; margin-top:10px; display:block">জরিমানার পরিমাণ (টাকা):</label><input type="number" id="fine-amount" placeholder="যেমন: ১০"><button class="modern-btn" id="btn-save-fine-config" style="background:#ca8a04">সেটিংস সেভ করুন</button></div><h3>সকল সদস্যের জরিমানা</h3><div id="all-users-fine-list"></div></div></div>
     <div id="meeting-modal" class="modal"><div class="modal-content"><i class="fa-solid fa-xmark modal-close-icon" onclick="document.getElementById('meeting-modal').style.display='none'"></i><h3>নতুন মিটিং শিডিউল</h3><label>তারিখ:</label><input type="date" id="meeting-date"><label>সময়:</label><input type="time" id="meeting-time"><label>উদ্দেশ্য:</label><textarea id="meeting-purpose" rows="2" placeholder="মিটিংয়ের বিষয়বস্তু..."></textarea><button class="modern-btn" id="btn-save-meeting">পোস্ট করুন</button><h4 style="margin-top:20px; border-top:1px solid #eee; padding-top:10px;">পূর্ববর্তী মিটিং</h4><div id="admin-meeting-list"></div></div></div>
     <div id="fee-modal" class="modal"><div class="modal-content"><i class="fa-solid fa-xmark modal-close-icon" onclick="document.getElementById('fee-modal').style.display='none'"></i><h3>মাসিক ফি নির্ধারণ</h3><div style="display:flex;gap:5px"><select id="fee-year"></select><input type="number" id="fee-amount" placeholder="টাকা"></div><button class="modern-btn" id="btn-save-fee">ফি সেভ করুন</button><div id="fee-list" style="margin-top:15px; border-top:1px solid #eee; padding-top:10px;"></div><button class="modern-btn" id="btn-recalc-all" style="background:#f59e0b;color:black; margin-top:20px">সবার ডিউ আপডেট করুন</button></div></div>
@@ -152,10 +181,74 @@
     
     <div id="config-modal" class="modal"><div class="modal-content"><i class="fa-solid fa-xmark modal-close-icon" onclick="document.getElementById('config-modal').style.display='none'"></i><h3>সেটিংস</h3><label>অ্যাপ লোগো:</label><input type="file" id="app-logo-file"><label>সমিতির নাম:</label><input type="text" id="app-name-input"><button class="modern-btn" id="btn-save-config">সেভ</button></div></div>
     <div id="notice-modal" class="modal"><div class="modal-content"><i class="fa-solid fa-xmark modal-close-icon" onclick="document.getElementById('notice-modal').style.display='none'"></i><h3>চলমান নোটিশ</h3><textarea id="notice-text-input" rows="4" placeholder="এখানে নোটিশ লিখুন..."></textarea><button class="modern-btn" id="btn-save-notice">আপডেট করুন</button></div></div>
-    <div id="receipt-modal" class="modal"><div class="modal-content" style="padding:0; overflow:hidden;"><div id="receipt-box" style="background:#fff; padding:30px; color:#334155; position:relative; overflow:hidden;"><div style="text-align:center; margin-bottom:20px;"><img id="rec-logo" src="https://i.ibb.co/5GzXk6n/logo.png" style="width:60px; height:60px; border-radius:50%; border:2px solid var(--primary); padding:2px; margin-bottom:5px;"><h3 id="rec-org-name" style="margin:0; color:var(--primary); font-size:18px;">জনকল্যাণ সমিতি</h3><small style="background:#e0f2f1; color:var(--primary); padding:3px 10px; border-radius:15px; font-size:11px;">জমা রসিদ</small></div><div style="border-bottom:2px dashed #cbd5e1; margin-bottom:20px;"></div><div style="font-size:13px; line-height:2.2;"><div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9;"><span>নাম:</span> <b id="rec-name"></b></div><div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9;"><span>টাকার পরিমাণ:</span> <b style="color:var(--primary)">৳ <span id="rec-amount"></span></b></div><div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9;"><span>মাস ও সাল:</span> <b><span id="rec-month"></span> <span id="rec-year"></span></b></div><div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9;"><span>জমা তারিখ:</span> <span id="rec-date"></span></div><div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9;"><span>মাধ্যম:</span> <span id="rec-method"></span></div><div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9;"><span>মন্তব্য:</span> <span id="rec-note"></span></div><div style="display:flex; justify-content:space-between; margin-top:5px;"><span>স্ট্যাটাস:</span> <span style="background:#f0fdf4; color:#166534; padding:2px 8px; border-radius:4px; font-weight:bold; border:1px solid #bbf7d0; font-size:11px;">Approved</span></div></div></div><div style="padding:20px; text-align:center; background:#f8fafc; display:flex; gap:10px;"><button class="modern-btn" id="btn-download-receipt" style="margin-top:0; flex:1"><i class="fa-solid fa-download"></i> ডাউনলোড</button><button class="modern-btn" onclick="location.reload()" style="background:transparent; color:#64748b; border:1px solid #cbd5e1; margin-top:0; flex:1">বন্ধ করুন</button></div></div></div>
+    
+    <!-- Receipt Modal (Updated Close Logic) -->
+    <div id="receipt-modal" class="modal">
+        <div class="modal-content" style="padding:0; overflow:hidden;">
+            <div id="receipt-box" style="background:#fff; padding:30px; color:#334155; position:relative; overflow:hidden;">
+                <div style="text-align:center; margin-bottom:20px;">
+                    <img id="rec-logo" src="https://i.ibb.co/5GzXk6n/logo.png" style="width:60px; height:60px; border-radius:50%; border:2px solid var(--primary); padding:2px; margin-bottom:5px;">
+                    <h3 id="rec-org-name" style="margin:0; color:var(--primary); font-size:18px;">জনকল্যাণ সমিতি</h3>
+                    <small style="background:#e0f2f1; color:var(--primary); padding:3px 10px; border-radius:15px; font-size:11px;">জমা রসিদ</small>
+                </div>
+                <div style="border-bottom:2px dashed #cbd5e1; margin-bottom:20px;"></div>
+                <div style="font-size:13px; line-height:2.2;">
+                    <div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9;"><span>নাম:</span> <b id="rec-name"></b></div>
+                    <div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9;"><span>টাকার পরিমাণ:</span> <b style="color:var(--primary)">৳ <span id="rec-amount"></span></b></div>
+                    <div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9;"><span>মাস ও সাল:</span> <b><span id="rec-month"></span> <span id="rec-year"></span></b></div>
+                    <div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9;"><span>জমা তারিখ:</span> <span id="rec-date"></span></div>
+                    <div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9;"><span>মাধ্যম:</span> <span id="rec-method"></span></div>
+                    <div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9;"><span>মন্তব্য:</span> <span id="rec-note"></span></div>
+                    <div style="display:flex; justify-content:space-between; margin-top:5px;"><span>স্ট্যাটাস:</span> <span style="background:#f0fdf4; color:#166534; padding:2px 8px; border-radius:4px; font-weight:bold; border:1px solid #bbf7d0; font-size:11px;">Approved</span></div>
+                </div>
+            </div>
+            <div style="padding:20px; text-align:center; background:#f8fafc; display:flex; gap:10px;">
+                <button class="modern-btn" id="btn-download-receipt" style="margin-top:0; flex:1"><i class="fa-solid fa-download"></i> ডাউনলোড</button>
+                <!-- Updated Close Button Logic: Redirects to Entry Modal -->
+                <button class="modern-btn" onclick="document.getElementById('receipt-modal').style.display='none'; document.getElementById('entry-modal').style.display='flex';" style="background:transparent; color:#64748b; border:1px solid #cbd5e1; margin-top:0; flex:1">বন্ধ করুন</button>
+            </div>
+        </div>
+    </div>
+
     <div id="edit-member-modal" class="modal"><div class="modal-content"><i class="fa-solid fa-xmark modal-close-icon" onclick="document.getElementById('edit-member-modal').style.display='none'"></i><h3>সদস্য এডিট</h3><input type="hidden" id="edit-mem-id"><input type="text" id="edit-mem-name"><input type="text" id="edit-mem-phone"><button class="modern-btn" id="btn-save-member">আপডেট</button></div></div>
     <div id="rules-modal" class="modal"><div class="modal-content"><i class="fa-solid fa-xmark modal-close-icon" onclick="document.getElementById('rules-modal').style.display='none'"></i><h3>নিয়মাবলী সেটআপ</h3><textarea id="rules-text" rows="8"></textarea><button class="modern-btn" id="btn-save-rules">পোস্ট করুন</button></div></div>
     <div id="decisions-modal" class="modal"><div class="modal-content"><i class="fa-solid fa-xmark modal-close-icon" onclick="document.getElementById('decisions-modal').style.display='none'"></i><h3>সিদ্ধান্ত গ্রহণ</h3><input type="text" id="decision-title" placeholder="বিষয়"><textarea id="decision-desc" rows="4" placeholder="বিস্তারিত সিদ্ধান্ত..."></textarea><input type="date" id="decision-date"><button class="modern-btn" id="btn-post-decision" style="background:#4f46e5">প্রকাশ করুন</button><h4 style="margin-top:20px; border-top:1px solid #eee; padding-top:10px;">পূর্ববর্তী সিদ্ধান্তসমূহ</h4><div id="admin-decisions-list"></div></div></div>
+
+    <!-- Extra Fee Setup Modal -->
+    <div id="extra-fee-setup-modal" class="modal">
+        <div class="modal-content">
+            <i class="fa-solid fa-xmark modal-close-icon" onclick="document.getElementById('extra-fee-setup-modal').style.display='none'"></i>
+            <h3>অতিরিক্ত ফি নির্ধারণ</h3>
+            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                <select id="ex-setup-year"></select>
+                <input type="text" id="ex-setup-title" placeholder="খাত (যেমন: ঈদুল ফিতর)">
+            </div>
+            <input type="number" id="ex-setup-amount" placeholder="টাকার পরিমাণ">
+            <button class="modern-btn" id="btn-save-extra-fee">আপডেট করুন</button>
+            <h4 style="margin-top:20px; border-top:1px solid #eee; padding-top:10px;">নির্ধারিত ফিসমূহ</h4>
+            <div id="extra-fee-list-container"></div>
+            <button class="modern-btn" id="btn-recalc-all-extra" style="background:#f59e0b; color:black; margin-top:20px">সকল সদস্যের ডিউ আপডেট করুন</button>
+        </div>
+    </div>
+
+    <!-- Extra Fee Collection Modal -->
+    <div id="extra-collection-modal" class="modal">
+        <div class="modal-content">
+            <i class="fa-solid fa-xmark modal-close-icon" onclick="document.getElementById('extra-collection-modal').style.display='none'"></i>
+            <h3>অতিরিক্ত ফি আদায়</h3>
+            <select id="ex-coll-name"><option>সদস্য সিলেক্ট করুন</option></select>
+            <div style="display:flex; gap:5px; margin-top:8px;">
+                <select id="ex-coll-year"></select>
+                <select id="ex-coll-title"><option>ফি সিলেক্ট করুন</option></select>
+            </div>
+            <label style="font-size:12px; margin-top:5px; display:block">টাকার পরিমাণ (অটো):</label>
+            <input type="number" id="ex-coll-amount" placeholder="টাকা">
+            <label style="font-size:12px">জমার তারিখ:</label>
+            <input type="date" id="ex-coll-date">
+            <select id="ex-coll-method"><option>Cash</option><option>Bkash</option><option>Nagad</option></select>
+            <button class="modern-btn" id="btn-submit-extra-coll">জমা নিশ্চিত করুন</button>
+        </div>
+    </div>
 
     <div id="admin-chat-modal" class="modal">
         <div class="modal-content" style="padding:0; height:85vh; border-radius:20px; overflow:hidden; background:#e5ddd5; display:flex; flex-direction:column;">
@@ -182,11 +275,49 @@
         const firebaseConfig = { apiKey: "AIzaSyD_cBqn-vmdEyqczFnDgjAZ8R4lzKrRCvs", authDomain: "sfa-smiti.firebaseapp.com", projectId: "sfa-smiti", storageBucket: "sfa-smiti.firebasestorage.app", messagingSenderId: "916634119266", appId: "1:916634119266:web:c58e818ee488cf1663753b" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app); const imgbbAPI = "0e75c16cdb6ffd2bd5249dd1f69783e8";
         let chatUnsubscribe = null; 
+        
+        // Global loadedFees for Auto-fill
+        let loadedFees = {}; 
 
         async function loadConfig() { const d=await getDoc(doc(db,"config","appSettings")); if(d.exists()){ if(d.data().logo)document.getElementById('admin-logo-view').src=d.data().logo; if(d.data().name)document.getElementById('admin-title-view').innerText=d.data().name; } } loadConfig();
-        const py=(i)=>{const s=document.getElementById(i);s.innerHTML='';for(let x=2020;x<=2040;x++){let o=document.createElement('option');o.text=x;s.add(o)}s.value=new Date().getFullYear()};py('entry-year');py('fee-year');
-        async function loadStats(){const s=await getDocs(collection(db,"users"));let c=0,m=0,d=0;s.forEach(x=>{const u=x.data();if(u.role!=='admin'){c++;m+=(u.totalDeposit||0);d+=(u.totalDue||0)}});document.getElementById('adm-mem').innerText=c;document.getElementById('adm-total').innerText=m;document.getElementById('adm-due').innerText=d;}loadStats();
-        async function getExp(){const d=await getDoc(doc(db,"config","fees"));if(!d.exists())return 0;const f=d.data();let t=0,n=new Date();for(let y=2020;y<=n.getFullYear();y++){let m=12;if(y===n.getFullYear())m=n.getMonth()+1;t+=((f[y]||0)*m);}return t;}
+        const py=(i)=>{const s=document.getElementById(i);if(s){s.innerHTML='';for(let x=2020;x<=2040;x++){let o=document.createElement('option');o.text=x;s.add(o)}s.value=new Date().getFullYear()}};py('entry-year');py('fee-year');py('ex-setup-year');py('ex-coll-year');
+        
+        // --- Updated loadStats to calculate Due dynamically ---
+        async function loadStats() {
+            const expected = await getExp(); 
+            const s = await getDocs(collection(db, "users"));
+            let c = 0, m = 0, d = 0;
+            s.forEach(x => {
+                const u = x.data();
+                if (u.role !== 'admin' && u.status === 'approved') {
+                    c++;
+                    const userDep = u.totalDeposit || 0;
+                    m += userDep;
+                    // Logic fix: only add positive dues
+                    let indDue = expected - userDep;
+                    if(indDue > 0) d += indDue;
+                }
+            });
+            document.getElementById('adm-mem').innerText = c;
+            document.getElementById('adm-total').innerText = m;
+            document.getElementById('adm-due').innerText = d;
+        }
+        loadStats();
+        
+        // Updated getExp to include Extra Fees
+        async function getExp(){
+            const d=await getDoc(doc(db,"config","fees"));
+            const f=d.exists()?d.data():{};
+            const exD=await getDoc(doc(db,"config","extraFees"));
+            const exF=exD.exists()?exD.data():{};
+            let t=0,n=new Date();
+            // Calculate Monthly Fees
+            for(let y=2020;y<=n.getFullYear();y++){let m=12;if(y===n.getFullYear())m=n.getMonth()+1;t+=((f[y]||0)*m);}
+            // Calculate Extra Fees
+            Object.values(exF).forEach(fee=>{if(parseInt(fee.year)<=n.getFullYear())t+=parseInt(fee.amount)});
+            return t;
+        }
+
         async function updateUserDue(uid){const u=(await getDoc(doc(db,"users",uid))).data();const e=await getExp();await updateDoc(doc(db,"users",uid),{totalDue:e-(u.totalDeposit||0)});}
 
         window.uA=async(id,a)=>{if(confirm(a==='approved'?"সদস্য এপ্রুভ করবেন?":"বাতিল করবেন?")){if(a==='approved'){await updateDoc(doc(db,"users",id),{status:'approved'});const e=await getExp();await updateDoc(doc(db,"users",id),{totalDue:e});alert("এপ্রুভ সফল")}else{await deleteDoc(doc(db,"users",id));alert("বাতিল সফল")}location.reload()}};
@@ -206,9 +337,8 @@
             });
         });
 
-        // --- Complaint / Chat Functions (Fixed Image Upload) ---
+        // --- Complaint / Chat Functions ---
         let currentChatUser = null;
-
         window.openChat = async (uid, name, photo) => {
             currentChatUser = uid;
             document.getElementById('admin-chat-modal').style.display = 'flex';
@@ -216,21 +346,16 @@
             document.getElementById('chat-header-img').src = photo || "https://i.ibb.co/5GzXk6n/logo.png";
             loadAdminChat(uid);
         };
-
         window.deleteSingleMsg = async (docId) => { if(confirm("এই মেসেজটি ডিলিট করবেন?")) { try { await deleteDoc(doc(db, "complaints", docId)); } catch(e) { console.error(e); } } };
         document.getElementById('btn-clear-chat').onclick = async () => { if(!currentChatUser) return; if(confirm("সব চ্যাট ডিলিট করবেন?")) { try { const q = query(collection(db, "complaints"), where("uid", "==", currentChatUser)); const s = await getDocs(q); s.forEach(async d => await deleteDoc(d.ref)); alert("চ্যাট ক্লিয়ার"); } catch(e) { alert("সমস্যা হয়েছে"); } } };
-
         function loadAdminChat(uid) {
             if(chatUnsubscribe) chatUnsubscribe();
             const box = document.getElementById('admin-chat-body');
             box.innerHTML = '<p style="text-align:center; font-size:12px; color:#999; margin-top:20px;">মেসেজ লোড হচ্ছে...</p>';
-            
             const q = query(collection(db, "complaints"), where("uid", "==", uid), orderBy("timestamp", "asc"));
-
             chatUnsubscribe = onSnapshot(q, (snapshot) => {
                 box.innerHTML = '';
                 if(snapshot.empty) { box.innerHTML = '<div style="text-align:center; margin-top:50px; opacity:0.6"><i class="fa-regular fa-comments" style="font-size:40px; color:#ccc;"></i><p style="font-size:13px;">কোনো মেসেজ নেই</p></div>'; return; }
-
                 snapshot.forEach(doc => {
                     const d = doc.data();
                     let imgHtml = d.photoUrl ? `<img src="${d.photoUrl}" class="chat-img-preview" onclick="window.open(this.src)">` : '';
@@ -238,66 +363,83 @@
                     if(!d.byAdmin && d.status !== 'read') { updateDoc(doc.ref, { status: 'read' }); }
                     let tickIcon = ''; if(d.byAdmin) { tickIcon = d.status === 'read' ? '<i class="fa-solid fa-check-double chat-tick seen"></i>' : '<i class="fa-solid fa-check chat-tick"></i>'; }
                     let deleteIcon = `<i class="fa-solid fa-trash delete-msg-btn" onclick="deleteSingleMsg('${doc.id}')"></i>`;
-
                     box.innerHTML += `<div class="chat-bubble ${bubbleClass}">${imgHtml}<div>${d.text}</div><div class="chat-meta"><span class="chat-time">${d.date}</span>${deleteIcon}${tickIcon}</div></div>`;
                 });
                 box.scrollTop = box.scrollHeight;
             });
         }
-
         document.getElementById('admin-chat-modal').onclick = (e) => { if(e.target === document.getElementById('admin-chat-modal')) { document.getElementById('admin-chat-modal').style.display='none'; if(chatUnsubscribe) chatUnsubscribe(); } };
-
         document.getElementById('btn-adm-send-chat').onclick = async () => {
             if(!currentChatUser) return;
             const txt = document.getElementById('adm-chat-text').value;
             const file = document.getElementById('adm-chat-file').files[0];
-            
             if(!txt && !file) return;
-            
             const btn = document.getElementById('btn-adm-send-chat');
             const originalIcon = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
             btn.disabled = true;
-
             let photoUrl = "";
             if (file) {
                 try {
-                    const fm = new FormData(); 
-                    fm.append("image", file);
+                    const fm = new FormData(); fm.append("image", file);
                     const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbAPI}`, { method: "POST", body: fm });
                     const data = await res.json();
-                    if(data.data && data.data.url) {
-                        photoUrl = data.data.url;
-                    } else {
-                        alert("ছবি আপলোড ব্যর্থ হয়েছে");
-                        btn.innerHTML = originalIcon;
-                        btn.disabled = false;
-                        return;
-                    }
+                    if(data.data && data.data.url) { photoUrl = data.data.url; } 
+                    else { alert("ছবি আপলোড ব্যর্থ হয়েছে"); btn.innerHTML = originalIcon; btn.disabled = false; return; }
                 } catch(e) { console.error("Img Upload Error:", e); alert("ছবি আপলোডে সমস্যা"); btn.innerHTML = originalIcon; btn.disabled = false; return; }
             }
-
-            await addDoc(collection(db, "complaints"), {
-                uid: currentChatUser,
-                text: txt,
-                photoUrl: photoUrl,
-                date: new Date().toLocaleDateString('bn-BD'),
-                timestamp: serverTimestamp(),
-                byAdmin: true,
-                status: 'sent'
-            });
-
-            document.getElementById('adm-chat-text').value = '';
-            document.getElementById('adm-chat-file').value = '';
-            btn.innerHTML = originalIcon;
-            btn.disabled = false;
+            await addDoc(collection(db, "complaints"), { uid: currentChatUser, text: txt, photoUrl: photoUrl, date: new Date().toLocaleDateString('bn-BD'), timestamp: serverTimestamp(), byAdmin: true, status: 'sent' });
+            document.getElementById('adm-chat-text').value = ''; document.getElementById('adm-chat-file').value = '';
+            btn.innerHTML = originalIcon; btn.disabled = false;
         };
 
         // --- Other Functions ---
         window.deleteDecision = async (id) => { if(confirm("ডিলিট করবেন?")) { await deleteDoc(doc(db, "decisions", id)); document.getElementById('btn-decisions').click(); } };
         document.getElementById('btn-decisions').onclick = async () => { document.getElementById('decisions-modal').style.display='flex'; document.getElementById('decision-date').valueAsDate = new Date(); const list = document.getElementById('admin-decisions-list'); list.innerHTML = 'লোড হচ্ছে...'; const s = await getDocs(query(collection(db, "decisions"), orderBy("timestamp", "desc"))); list.innerHTML = ''; if(s.empty) list.innerHTML = '<p style="text-align:center">কোনো সিদ্ধান্ত নেই</p>'; s.forEach(d => { const m = d.data(); list.innerHTML += `<div class="smart-card" style="display:block; border-left:4px solid #4f46e5;"><div style="display:flex; justify-content:space-between"><b>${m.title}</b><button onclick="deleteDecision('${d.id}')" style="background:red; color:white; border:none; padding:2px 8px; border-radius:4px; cursor:pointer"><i class="fa-solid fa-trash"></i></button></div><div style="font-size:12px; margin-top:5px; color:#64748b;">${m.date}</div><div style="font-size:13px; margin-top:5px; white-space:pre-wrap;">${m.description}</div></div>`; }); };
         document.getElementById('btn-post-decision').onclick = async () => { const t = document.getElementById('decision-title').value; const d = document.getElementById('decision-desc').value; const dt = document.getElementById('decision-date').value; if(!t || !d) return alert("তথ্য দিন"); await addDoc(collection(db, "decisions"), { title: t, description: d, date: dt, timestamp: new Date() }); alert("প্রকাশিত হয়েছে"); document.getElementById('decision-title').value = ''; document.getElementById('decision-desc').value = ''; document.getElementById('btn-decisions').click(); };
-        window.showDue = async (uid, name) => { document.getElementById('due-details-modal').style.display = 'flex'; document.getElementById('due-user-name-title').innerText = name + " - বকেয়া"; const l = document.getElementById('due-months-list'); const totalDisplay = document.getElementById('admin-due-modal-total'); l.innerHTML = '<div style="text-align:center; padding:20px;">হিসাব করা হচ্ছে...</div>'; totalDisplay.innerText = "0"; try { const feesDoc = await getDoc(doc(db, "config", "fees")); const fees = feesDoc.data() || {}; const depositsQuery = query(collection(db, "deposits"), where("uid", "==", uid), where("status", "==", "approved")); const depositsSnap = await getDocs(depositsQuery); const paidMonths = new Set(); depositsSnap.forEach(d => { paidMonths.add(`${d.data().month}-${d.data().year}`); }); l.innerHTML = ''; let totalDue = 0; let hasDue = false; let currentDate = new Date(); for (let y = 2020; y <= currentDate.getFullYear(); y++) { if (fees[y]) { for (let m = 0; m < 12; m++) { if (y == currentDate.getFullYear() && m > currentDate.getMonth()) break; let mn = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][m]; if (!paidMonths.has(`${mn}-${y}`)) { hasDue = true; totalDue += fees[y]; l.innerHTML += ` <div class="smart-card" style="border-left:4px solid #dc2626"> <span style="font-weight:500; font-size:14px; color:#334155">${mn} ${y}</span> <span style="font-weight:700; color:#dc2626">৳${fees[y]}</span> </div>`; } } } } totalDisplay.innerText = totalDue; if (!hasDue) { l.innerHTML = '<p style="text-align:center; color:#059669; font-weight:500; padding:20px; background:#f0fdf4; border-radius:10px;">কোনো বকেয়া নেই।</p>'; } } catch (e) { l.innerHTML = '<p style="text-align:center; color:red">তথ্য লোড করতে সমস্যা হয়েছে</p>'; } };
+        
+        // Updated showDue to show Extra Fees
+        window.showDue = async (uid, name) => { 
+            document.getElementById('due-details-modal').style.display = 'flex'; 
+            document.getElementById('due-user-name-title').innerText = name + " - বকেয়া"; 
+            const l = document.getElementById('due-months-list'); 
+            const totalDisplay = document.getElementById('admin-due-modal-total'); 
+            l.innerHTML = '<div style="text-align:center; padding:20px;">হিসাব করা হচ্ছে...</div>'; 
+            totalDisplay.innerText = "0"; 
+            try { 
+                const feesDoc = await getDoc(doc(db, "config", "fees")); 
+                const fees = feesDoc.data() || {};
+                const exFeesDoc = await getDoc(doc(db, "config", "extraFees"));
+                const extraFees = exFeesDoc.exists() ? exFeesDoc.data() : {};
+                const depositsSnap = await getDocs(query(collection(db, "deposits"), where("uid", "==", uid), where("status", "==", "approved"))); 
+                const paidItems = new Set(); 
+                depositsSnap.forEach(d => { paidItems.add(`${d.data().month}-${d.data().year}`); }); 
+                l.innerHTML = ''; let totalDue = 0; let currentDate = new Date(); 
+                for (let y = 2020; y <= currentDate.getFullYear(); y++) { 
+                    if (fees[y]) { 
+                        for (let m = 0; m < 12; m++) { 
+                            if (y == currentDate.getFullYear() && m > currentDate.getMonth()) break; 
+                            let mn = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][m]; 
+                            if (!paidItems.has(`${mn}-${y}`)) { 
+                                totalDue += fees[y]; 
+                                l.innerHTML += ` <div class="smart-card" style="border-left:4px solid #dc2626"> <span style="font-weight:500; font-size:14px; color:#334155">${mn} ${y}</span> <span style="font-weight:700; color:#dc2626">৳${fees[y]}</span> </div>`; 
+                            } 
+                        } 
+                    } 
+                } 
+                Object.values(extraFees).forEach(f => {
+                    if (parseInt(f.year) <= currentDate.getFullYear()) {
+                        if (!paidItems.has(`${f.title}-${f.year}`)) {
+                            totalDue += parseInt(f.amount);
+                            l.innerHTML += `<div class="smart-card" style="border-left:4px solid #9333ea"><span style="color:#334155">${f.title} (${f.year})</span><span style="font-weight:700; color:#9333ea">৳${f.amount}</span></div>`;
+                        }
+                    }
+                });
+                totalDisplay.innerText = totalDue; 
+                if (l.innerHTML === '') l.innerHTML = '<p style="text-align:center; color:#059669; font-weight:500; padding:20px; background:#f0fdf4; border-radius:10px;">কোনো বকেয়া নেই।</p>'; 
+            } catch (e) { l.innerHTML = '<p style="text-align:center; color:red">তথ্য লোড করতে সমস্যা হয়েছে</p>'; } 
+        };
+        
         window.editFee = (year, amount) => { document.getElementById('fee-year').value = year; document.getElementById('fee-amount').value = amount; };
         window.deleteFee = async (year) => { if(confirm(`${year} সালের ফি ডিলিট করবেন?`)) { await updateDoc(doc(db,"config","fees"), { [year]: deleteField() }); alert("ডিলিট হয়েছে"); document.getElementById('btn-monthly-fee').click(); } };
         document.getElementById('btn-monthly-fee').onclick=async()=>{ document.getElementById('fee-modal').style.display='flex'; const l=document.getElementById('fee-list');l.innerHTML='লোড হচ্ছে...'; const d=await getDoc(doc(db,"config","fees")); l.innerHTML=''; if(d.exists()){ const f=d.data(); Object.keys(f).sort().forEach(k=>{ l.innerHTML+=` <div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #eee; align-items:center;"> <span style="font-weight:500;">${k} সাল - ৳${f[k]}</span> <div> <button onclick="editFee('${k}', ${f[k]})" style="background:#eab308;color:black;border:none;padding:5px 8px;border-radius:5px;cursor:pointer;margin-right:5px;"><i class="fa-solid fa-pen"></i></button> <button onclick="deleteFee('${k}')" style="background:#dc2626;color:white;border:none;padding:5px 8px;border-radius:5px;cursor:pointer;"><i class="fa-solid fa-trash"></i></button> </div> </div>`; }) } };
@@ -309,7 +451,6 @@
         document.getElementById('btn-save-fine-config').onclick=async()=>{ const d = parseInt(document.getElementById('fine-late-date').value); const a = parseInt(document.getElementById('fine-amount').value); await setDoc(doc(db, "config", "fineSettings"), { lateDate: d, amount: a }, { merge: true }); alert("সেটিংস সেভ হয়েছে"); document.getElementById('btn-fine-management').click(); };
         window.deleteMeeting = async (id) => { if(confirm("মিটিং ডিলিট করবেন?")) { await deleteDoc(doc(db, "meetings", id)); alert("ডিলিট হয়েছে"); document.getElementById('btn-meeting-admin').click(); } };
         document.getElementById('btn-meeting-admin').onclick=async()=>{ document.getElementById('meeting-modal').style.display='flex'; const l = document.getElementById('admin-meeting-list'); l.innerHTML = 'লোড হচ্ছে...'; try { const s = await getDocs(query(collection(db, "meetings"), orderBy("createdAt", "desc"))); l.innerHTML = ''; if(s.empty) l.innerHTML = '<p style="text-align:center">কোনো মিটিং নেই</p>'; s.forEach(d => { const m = d.data(); l.innerHTML += `<div class="smart-card" style="display:block;"><div style="display:flex; justify-content:space-between"><b>${m.date} (${m.day})</b><button onclick="deleteMeeting('${d.id}')" style="background:red; color:white; border:none; padding:2px 8px; border-radius:4px; cursor:pointer"><i class="fa-solid fa-trash"></i></button></div><div style="font-size:12px; margin-top:5px;">সময়: ${m.time}</div><div style="font-size:12px;">উদ্দেশ্য: ${m.purpose}</div></div>`; }); } catch(e) { console.log(e); } };
-        document.getElementById('btn-save-meeting').onclick=async()=>{ const date = document.getElementById('meeting-date').value; const time = document.getElementById('meeting-time').value; const purpose = document.getElementById('meeting-purpose').value; if(!date || !time || !purpose) return alert("সব তথ্য দিন"); const dayName = new Date(date).toLocaleDateString('bn-BD', { weekday: 'long' }); await addDoc(collection(db, "meetings"), { date, time, purpose, day: dayName, createdAt: new Date() }); alert("মিটিং পোস্ট হয়েছে"); document.getElementById('meeting-date').value = ''; document.getElementById('meeting-time').value = ''; document.getElementById('meeting-purpose').value = ''; document.getElementById('btn-meeting-admin').click(); };
         document.getElementById('btn-approv').onclick=async()=>{document.getElementById('approv-modal').style.display='flex';const c=document.getElementById('req-list-container');c.innerHTML='...';const s=await getDocs(query(collection(db,"users"),where("status","==","pending")));c.innerHTML='';if(s.empty)c.innerHTML='<p style="text-align:center">কোনো রিকুয়েস্ট নেই</p>';s.forEach(d=>{const u=d.data();c.innerHTML+=`<div class="smart-card"><div style="display:flex;align-items:center;gap:10px"><img src="${u.photoUrl}" style="width:40px;height:40px;border-radius:50%"><div><b>${u.name}</b><br>${u.phone}</div></div><div><button class="approve-btn" onclick="uA('${d.id}','approved')"><i class="fa-solid fa-check"></i></button> <button class="reject-btn" onclick="uA('${d.id}','rejected')"><i class="fa-solid fa-times"></i></button></div></div>`})};
         document.getElementById('btn-deposit-req').onclick=async()=>{document.getElementById('deposit-approv-modal').style.display='flex';const c=document.getElementById('deposit-req-list');c.innerHTML='...';const s=await getDocs(query(collection(db,"deposits"),where("status","==","pending")));c.innerHTML='';if(s.empty)c.innerHTML='<p style="text-align:center">কোনো রিকুয়েস্ট নেই</p>';s.forEach(d=>{const t=d.data();c.innerHTML+=`<div class="smart-card"><div><b>${t.name}</b><br>৳${t.amount} (${t.method})<br><small>${t.month} ${t.year}</small></div><div><button class="approve-btn" onclick="apprDep('${d.id}','${t.uid}',${t.amount})"><i class="fa-solid fa-check"></i></button> <button class="reject-btn" onclick="rejDep('${d.id}')"><i class="fa-solid fa-times"></i></button></div></div>`})};
         
@@ -341,10 +482,8 @@
                 const complaintsSnap = await getDocs(collection(db, "complaints"));
                 const activeChatUsers = new Set();
                 complaintsSnap.forEach(doc => { activeChatUsers.add(doc.data().uid); });
-
                 c.innerHTML='';
                 if(activeChatUsers.size === 0) { c.innerHTML = '<p style="text-align:center">কোনো মেসেজ নেই</p>'; return; }
-
                 s.forEach(d=>{
                     const u=d.data();
                     if(activeChatUsers.has(d.id)){
@@ -354,128 +493,165 @@
             } catch(e) { console.log(e); }
         };
 
-        document.getElementById('btn-due-list').onclick=async()=>{document.getElementById('due-list-modal').style.display='flex';const c=document.getElementById('due-users-container');c.innerHTML='<div style="text-align:center; padding:20px">লোড হচ্ছে...</div>';try{const usersSnap=await getDocs(collection(db,"users"));const feesDoc=await getDoc(doc(db,"config","fees"));const fees=feesDoc.data()||{};const depositsSnap=await getDocs(query(collection(db,"deposits"),where("status","==","approved")));const userPaidMonths={};depositsSnap.forEach(d=>{const uid=d.data().uid;if(!userPaidMonths[uid])userPaidMonths[uid]=new Set();userPaidMonths[uid].add(`${d.data().month}-${d.data().year}`)});c.innerHTML='';let currentDate=new Date();usersSnap.forEach(d=>{const u=d.data();if(u.status=='approved'&&u.role!=='admin'){let totalDue=0;const paidSet=userPaidMonths[d.id]||new Set();for(let y=2020;y<=currentDate.getFullYear();y++){if(fees[y]){for(let m=0;m<12;m++){if(y==currentDate.getFullYear()&&m>currentDate.getMonth())break;let mn=["January","February","March","April","May","June","July","August","September","October","November","December"][m];if(!paidSet.has(`${mn}-${y}`)){totalDue+=fees[y];}}}}c.innerHTML+=`<div class="smart-card" onclick="showDue('${d.id}','${u.name}')" style="cursor:pointer"><div><b>${u.name}</b><br>${u.phone}</div><div><span style="color:#dc2626; font-weight:bold; display:block; text-align:right">৳${totalDue}</span><small style="color:var(--primary)">বিস্তারিত <i class="fa-solid fa-arrow-right"></i></small></div></div>`;}});if(c.innerHTML=='')c.innerHTML='<p style="text-align:center">কোনো বকেয়া নেই</p>';}catch(e){console.error(e);c.innerHTML='<div style="text-align:center; color:red">সমস্যা হয়েছে</div>';}};
+        // --- Extra Fee Logic ---
+        document.getElementById('btn-extra-fee-setup').onclick = async () => {
+            document.getElementById('extra-fee-setup-modal').style.display = 'flex';
+            loadExtraFeeList();
+        };
+
+        async function loadExtraFeeList() {
+            const c = document.getElementById('extra-fee-list-container');
+            c.innerHTML = 'লোড হচ্ছে...';
+            const d = await getDoc(doc(db, "config", "extraFees"));
+            c.innerHTML = '';
+            if (d.exists()) {
+                const fees = d.data();
+                const sortedKeys = Object.keys(fees).sort((a, b) => fees[b].year - fees[a].year);
+                sortedKeys.forEach(key => {
+                    const f = fees[key];
+                    c.innerHTML += `<div class="smart-card" style="display:flex; justify-content:space-between; align-items:center;"><div><b>${f.title}</b> <small>(${f.year})</small><div style="color:var(--primary); font-weight:bold;">৳${f.amount}</div></div><button onclick="deleteExtraFee('${key}')" style="background:#dc2626; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></div>`;
+                });
+            } else { c.innerHTML = '<p style="text-align:center">কোনো ফি নেই</p>'; }
+        }
+
+        document.getElementById('btn-save-extra-fee').onclick = async () => {
+            const y = document.getElementById('ex-setup-year').value;
+            const t = document.getElementById('ex-setup-title').value.trim();
+            const a = parseInt(document.getElementById('ex-setup-amount').value);
+            if (!y || !t || !a) return alert("সব তথ্য দিন");
+            const id = `${y}_${t.replace(/\s+/g, '_')}`;
+            await setDoc(doc(db, "config", "extraFees"), { [id]: { year: y, title: t, amount: a, createdAt: new Date() } }, { merge: true });
+            alert("আপডেট হয়েছে");
+            document.getElementById('ex-setup-title').value = '';
+            document.getElementById('ex-setup-amount').value = '';
+            loadExtraFeeList();
+        };
+
+        window.deleteExtraFee = async (key) => { if(confirm("এই ফি ডিলিট করবেন?")) { await updateDoc(doc(db, "config", "extraFees"), { [key]: deleteField() }); loadExtraFeeList(); } };
+        document.getElementById('btn-recalc-all-extra').onclick = document.getElementById('btn-recalc-all').onclick;
+
+        // --- Extra Collection Logic ---
+        document.getElementById('btn-extra-collection').onclick = async () => {
+            document.getElementById('extra-collection-modal').style.display = 'flex';
+            document.getElementById('ex-coll-date').valueAsDate = new Date();
+            const s = document.getElementById('ex-coll-name');
+            s.innerHTML = '<option>সদস্য সিলেক্ট করুন</option>';
+            (await getDocs(collection(db, "users"))).forEach(d => { if (d.data().status == 'approved' && d.data().role !== 'admin') { s.innerHTML += `<option value="${d.id}">${d.data().name}</option>`; } });
+            const fs = document.getElementById('ex-coll-title');
+            fs.innerHTML = '<option value="">ফি সিলেক্ট করুন</option>';
+            const d = await getDoc(doc(db, "config", "extraFees"));
+            if(d.exists()) {
+                const fees = d.data();
+                Object.keys(fees).forEach(key => { const f = fees[key]; fs.innerHTML += `<option value="${f.title}" data-amount="${f.amount}" data-year="${f.year}">${f.title} - ${f.year} (৳${f.amount})</option>`; });
+            }
+        };
+
+        document.getElementById('ex-coll-title').onchange = (e) => { const opt = e.target.options[e.target.selectedIndex]; if(opt.dataset.amount) { document.getElementById('ex-coll-amount').value = opt.dataset.amount; document.getElementById('ex-coll-year').value = opt.dataset.year; } };
+
+        document.getElementById('btn-submit-extra-coll').onclick = async () => {
+            const uid = document.getElementById('ex-coll-name').value;
+            const title = document.getElementById('ex-coll-title').value;
+            const amt = parseInt(document.getElementById('ex-coll-amount').value);
+            const year = document.getElementById('ex-coll-year').value;
+            const date = document.getElementById('ex-coll-date').value;
+            if (uid === 'সদস্য সিলেক্ট করুন' || !title || !amt) return alert("তথ্য দিন");
+            const q = query(collection(db, "deposits"), where("uid", "==", uid), where("month", "==", title), where("year", "==", year), where("status", "in", ["approved"]));
+            const dup = await getDocs(q);
+            if (!dup.empty) return alert("এই ফি ইতিমধ্যে জমা হয়েছে");
+            if (confirm("জমা নিশ্চিত করবেন?")) {
+                const nm = document.getElementById('ex-coll-name').options[document.getElementById('ex-coll-name').selectedIndex].text;
+                await addDoc(collection(db, "deposits"), { uid, name: nm, amount: amt, month: title, year: year, method: document.getElementById('ex-coll-method').value, note: "Extra Fee", depositDate: date, status: 'approved', isExtra: true, date: new Date(), submittedBy: 'admin' });
+                await updateDoc(doc(db, "users", uid), { totalDeposit: increment(amt) });
+                await updateUserDue(uid);
+                document.getElementById('extra-collection-modal').style.display = 'none';
+                alert("অতিরিক্ত ফি জমা সফল হয়েছে!");
+                loadStats();
+            }
+        };
+
+        document.getElementById('btn-due-list').onclick=async()=>{document.getElementById('due-list-modal').style.display='flex';const c=document.getElementById('due-users-container');c.innerHTML='<div style="text-align:center; padding:20px">লোড হচ্ছে...</div>';try{const usersSnap=await getDocs(collection(db,"users"));const feesDoc=await getDoc(doc(db,"config","fees"));const fees=feesDoc.data()||{};const exFeesDoc=await getDoc(doc(db,"config","extraFees"));const extraFees=exFeesDoc.exists()?exFeesDoc.data():{};const depositsSnap=await getDocs(query(collection(db,"deposits"),where("status","==","approved")));const userPaidMonths={};depositsSnap.forEach(d=>{const uid=d.data().uid;if(!userPaidMonths[uid])userPaidMonths[uid]=new Set();userPaidMonths[uid].add(`${d.data().month}-${d.data().year}`)});c.innerHTML='';let currentDate=new Date();usersSnap.forEach(d=>{const u=d.data();if(u.status=='approved'&&u.role!=='admin'){let totalDue=0;const paidSet=userPaidMonths[d.id]||new Set();for(let y=2020;y<=currentDate.getFullYear();y++){if(fees[y]){for(let m=0;m<12;m++){if(y==currentDate.getFullYear()&&m>currentDate.getMonth())break;let mn=["January","February","March","April","May","June","July","August","September","October","November","December"][m];if(!paidSet.has(`${mn}-${y}`)){totalDue+=fees[y];}}}} Object.values(extraFees).forEach(f=>{if(parseInt(f.year)<=currentDate.getFullYear()){if(!paidSet.has(`${f.title}-${f.year}`)){totalDue+=parseInt(f.amount)}}}); c.innerHTML+=`<div class="smart-card" onclick="showDue('${d.id}','${u.name}')" style="cursor:pointer"><div><b>${u.name}</b><br>${u.phone}</div><div><span style="color:#dc2626; font-weight:bold; display:block; text-align:right">৳${totalDue}</span><small style="color:var(--primary)">বিস্তারিত <i class="fa-solid fa-arrow-right"></i></small></div></div>`;}});if(c.innerHTML=='')c.innerHTML='<p style="text-align:center">কোনো বকেয়া নেই</p>';}catch(e){console.error(e);c.innerHTML='<div style="text-align:center; color:red">সমস্যা হয়েছে</div>';}};
         
-        // --- Updated Deposit List Logic ---
-        
-        // 1. Show Member List for Deposits
         document.getElementById('btn-deposit-list').onclick = async () => {
             document.getElementById('all-deposit-modal').style.display = 'flex';
             const container = document.getElementById('deposit-members-list');
             container.innerHTML = '<div style="text-align:center; padding:20px">লোড হচ্ছে...</div>';
-            
             try {
-                // Fetch all users sorted/filtered
                 const usersSnap = await getDocs(collection(db, "users"));
                 container.innerHTML = '';
-                
                 let usersList = [];
-                usersSnap.forEach(doc => {
-                    const u = doc.data();
-                    if (u.role !== 'admin' && u.status === 'approved') {
-                        usersList.push({ id: doc.id, ...u });
-                    }
-                });
-
-                if (usersList.length === 0) {
-                    container.innerHTML = '<p style="text-align:center">কোনো সদস্য নেই</p>';
-                    return;
-                }
-
-                usersList.forEach(u => {
-                    const totalDep = u.totalDeposit || 0;
-                    container.innerHTML += `
-                        <div class="smart-card search-item" style="border-left: 4px solid var(--primary);">
-                            <div>
-                                <b class="search-name">${u.name}</b><br>
-                                <span style="font-size:12px; color:#64748b;">${u.phone}</span>
-                            </div>
-                            <div style="text-align:right;">
-                                <span style="font-weight:bold; color:var(--primary); font-size:15px;">৳${totalDep}</span>
-                                <div onclick="viewUserDeposits('${u.id}', '${u.name}', ${totalDep})" style="font-size:11px; color:#00695c; cursor:pointer; margin-top:3px; display:flex; align-items:center; justify-content:flex-end; gap:3px;">
-                                    বিস্তারিত <i class="fa-solid fa-arrow-right"></i>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-
-            } catch (e) {
-                console.error(e);
-                container.innerHTML = '<p style="text-align:center; color:red">তথ্য লোড করতে সমস্যা হয়েছে</p>';
-            }
+                usersSnap.forEach(doc => { const u = doc.data(); if (u.role !== 'admin' && u.status === 'approved') { usersList.push({ id: doc.id, ...u }); } });
+                if (usersList.length === 0) { container.innerHTML = '<p style="text-align:center">কোনো সদস্য নেই</p>'; return; }
+                usersList.forEach(u => { const totalDep = u.totalDeposit || 0; container.innerHTML += ` <div class="smart-card search-item" style="border-left: 4px solid var(--primary);"> <div> <b class="search-name">${u.name}</b><br> <span style="font-size:12px; color:#64748b;">${u.phone}</span> </div> <div style="text-align:right;"> <span style="font-weight:bold; color:var(--primary); font-size:15px;">৳${totalDep}</span> <div onclick="viewUserDeposits('${u.id}', '${u.name}', ${totalDep})" style="font-size:11px; color:#00695c; cursor:pointer; margin-top:3px; display:flex; align-items:center; justify-content:flex-end; gap:3px;"> বিস্তারিত <i class="fa-solid fa-arrow-right"></i> </div> </div> </div>`; });
+            } catch (e) { console.error(e); container.innerHTML = '<p style="text-align:center; color:red">তথ্য লোড করতে সমস্যা হয়েছে</p>'; }
         };
 
-        // 2. Search Functionality for Deposit List
         document.getElementById('deposit-search-input').addEventListener('input', function(e) {
             const searchText = e.target.value.toLowerCase();
             const items = document.querySelectorAll('#deposit-members-list .search-item');
-            items.forEach(item => {
-                const name = item.querySelector('.search-name').innerText.toLowerCase();
-                item.style.display = name.includes(searchText) ? 'flex' : 'none';
-            });
+            items.forEach(item => { const name = item.querySelector('.search-name').innerText.toLowerCase(); item.style.display = name.includes(searchText) ? 'flex' : 'none'; });
         });
 
-        // 3. View Individual User Details
         window.viewUserDeposits = async (uid, name, total) => {
             document.getElementById('user-deposit-details-modal').style.display = 'flex';
             document.getElementById('dep-user-title').innerText = name;
             document.getElementById('dep-user-total').innerText = total;
-            
             const listContainer = document.getElementById('dep-history-list');
             listContainer.innerHTML = '<div style="text-align:center; padding:20px">ইতিহাস লোড হচ্ছে...</div>';
-
             try {
-                // Query deposits for this user
                 const q = query(collection(db, "deposits"), where("uid", "==", uid), where("status", "==", "approved"));
                 const querySnapshot = await getDocs(q);
-                
                 let deposits = [];
-                querySnapshot.forEach(doc => {
-                    deposits.push({ id: doc.id, ...doc.data() });
-                });
-
-                // Sort manually: Year descending, then Month logic
+                querySnapshot.forEach(doc => { deposits.push({ id: doc.id, ...doc.data() }); });
                 const monthMap = { "January":1, "February":2, "March":3, "April":4, "May":5, "June":6, "July":7, "August":8, "September":9, "October":10, "November":11, "December":12 };
-                
-                deposits.sort((a, b) => {
-                    if (b.year !== a.year) return b.year - a.year;
-                    return monthMap[b.month] - monthMap[a.month];
-                });
-
+                deposits.sort((a, b) => { if (b.year !== a.year) return b.year - a.year; return (monthMap[b.month] || 0) - (monthMap[a.month] || 0); });
                 listContainer.innerHTML = '';
-                if (deposits.length === 0) {
-                    listContainer.innerHTML = '<p style="text-align:center; color:#666">কোনো জমার তথ্য নেই।</p>';
-                    return;
-                }
+                if (deposits.length === 0) { listContainer.innerHTML = '<p style="text-align:center; color:#666">কোনো জমার তথ্য নেই।</p>'; return; }
+                deposits.forEach(d => { listContainer.innerHTML += ` <div class="smart-card" style="display:block; position:relative;"> <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:5px; margin-bottom:5px;"> <span style="font-weight:bold; color:#334155;">${d.month} ${d.year}</span> <span style="font-weight:bold; color:var(--primary);">৳${d.amount}</span> </div> <div style="font-size:12px; color:#64748b; line-height:1.6;"> <div><i class="fa-regular fa-calendar" style="width:15px"></i> জমা তারিখ: ${d.depositDate || '--'}</div> <div><i class="fa-solid fa-wallet" style="width:15px"></i> মাধ্যম: ${d.method || 'Cash'}</div> ${d.note ? `<div><i class="fa-regular fa-note-sticky" style="width:15px"></i> নোট: ${d.note}</div>` : ''} </div> <button onclick="del('${d.id}', '${d.uid}', ${d.amount})" style="position:absolute; bottom:10px; right:10px; background:#fee2e2; color:#dc2626; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; font-size:11px;"> <i class="fa-solid fa-trash"></i> ডিলিট </button> </div>`; });
+            } catch (e) { console.error(e); listContainer.innerHTML = '<p style="text-align:center; color:red">বিস্তারিত লোড করা যায়নি</p>'; }
+        };
 
-                deposits.forEach(d => {
-                    listContainer.innerHTML += `
-                        <div class="smart-card" style="display:block; position:relative;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:5px; margin-bottom:5px;">
-                                <span style="font-weight:bold; color:#334155;">${d.month} ${d.year}</span>
-                                <span style="font-weight:bold; color:var(--primary);">৳${d.amount}</span>
-                            </div>
-                            <div style="font-size:12px; color:#64748b; line-height:1.6;">
-                                <div><i class="fa-regular fa-calendar" style="width:15px"></i> জমা তারিখ: ${d.depositDate || '--'}</div>
-                                <div><i class="fa-solid fa-wallet" style="width:15px"></i> মাধ্যম: ${d.method || 'Cash'}</div>
-                                ${d.note ? `<div><i class="fa-regular fa-note-sticky" style="width:15px"></i> নোট: ${d.note}</div>` : ''}
-                            </div>
-                            <button onclick="del('${d.id}', '${d.uid}', ${d.amount})" style="position:absolute; bottom:10px; right:10px; background:#fee2e2; color:#dc2626; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; font-size:11px;">
-                                <i class="fa-solid fa-trash"></i> ডিলিট
-                            </button>
-                        </div>
-                    `;
-                });
+        // --- FIXED: Money Entry Logic (Auto Load Fee) ---
+        function updateAdminEntryAmount() {
+            const y = document.getElementById('entry-year').value;
+            const amount = loadedFees[y] || 0;
+            const input = document.getElementById('entry-amount');
+            input.value = amount;
+            if(amount == 0) input.placeholder = "এই সালের ফি সেট করা নেই";
+        }
+        document.getElementById('entry-year').addEventListener('change', updateAdminEntryAmount);
 
-            } catch (e) {
-                console.error(e);
-                listContainer.innerHTML = '<p style="text-align:center; color:red">বিস্তারিত লোড করা যায়নি</p>';
+        document.getElementById('btn-money-entry').onclick=async()=>{
+            document.getElementById('entry-modal').style.display='flex';
+            document.getElementById('entry-date').valueAsDate=new Date();
+            const s=document.getElementById('entry-name');
+            s.innerHTML='<option>সদস্য সিলেক্ট করুন</option>';
+            (await getDocs(collection(db,"users"))).forEach(d=>{if(d.data().status=='approved'&&d.data().role!=='admin')s.innerHTML+=`<option value="${d.id}" data-n="${d.data().name}">${d.data().name}</option>`});
+            
+            // Load Fees for auto-fill
+            const feesDoc = await getDoc(doc(db, "config", "fees"));
+            loadedFees = feesDoc.exists() ? feesDoc.data() : {};
+            updateAdminEntryAmount();
+        };
+
+        document.getElementById('btn-submit-entry').onclick=async()=>{ 
+            const uid=document.getElementById('entry-name').value,amt=parseInt(document.getElementById('entry-amount').value),m=document.getElementById('entry-month').value,y=document.getElementById('entry-year').value,dt=document.getElementById('entry-date').value,nt=document.getElementById('entry-note').value; 
+            if(uid === 'সদস্য সিলেক্ট করুন') return alert("সদস্য সিলেক্ট করুন");
+            if(!amt || amt <= 0) return alert("এই সালের জন্য ফি নির্ধারণ করা নেই।");
+            const q=query(collection(db,"deposits"),where("uid","==",uid),where("month","==",m),where("year","==",y),where("status","in",["approved","pending"])); 
+            const dup=await getDocs(q);if(!dup.empty)return alert("এই মাসের জমা ইতিমধ্যে আছে"); 
+            if(confirm("জমা নিশ্চিত করবেন?")){ 
+                const nm=document.getElementById('entry-name').options[document.getElementById('entry-name').selectedIndex].text; 
+                await addDoc(collection(db,"deposits"),{uid,name:nm,amount:amt,month:m,year:y,method:document.getElementById('entry-method').value,note:nt,depositDate:dt,status:'approved',date:new Date(),submittedBy:'admin'}); 
+                await updateDoc(doc(db,"users",uid),{totalDeposit:increment(amt)}); 
+                await updateUserDue(uid); 
+                document.getElementById('entry-modal').style.display='none'; 
+                document.getElementById('receipt-modal').style.display='flex'; 
+                if(document.getElementById('admin-logo-view').src)document.getElementById('rec-logo').src=document.getElementById('admin-logo-view').src;
+                if(document.getElementById('admin-title-view').innerText)document.getElementById('rec-org-name').innerText=document.getElementById('admin-title-view').innerText;
+                document.getElementById('rec-name').innerText=nm;document.getElementById('rec-date').innerText=dt;document.getElementById('rec-amount').innerText=amt;document.getElementById('rec-month').innerText=`${m} ${y}`;document.getElementById('rec-note').innerText=nt||"নাই";document.getElementById('rec-method').innerText=document.getElementById('entry-method').value;loadStats()
             }
         };
 
-        document.getElementById('btn-money-entry').onclick=async()=>{document.getElementById('entry-modal').style.display='flex';document.getElementById('entry-date').valueAsDate=new Date();const s=document.getElementById('entry-name');s.innerHTML='<option>সদস্য সিলেক্ট করুন</option>';(await getDocs(collection(db,"users"))).forEach(d=>{if(d.data().status=='approved'&&d.data().role!=='admin')s.innerHTML+=`<option value="${d.id}" data-n="${d.data().name}">${d.data().name}</option>`})};
-        document.getElementById('btn-submit-entry').onclick=async()=>{ const uid=document.getElementById('entry-name').value,amt=parseInt(document.getElementById('entry-amount').value),m=document.getElementById('entry-month').value,y=document.getElementById('entry-year').value,dt=document.getElementById('entry-date').value,nt=document.getElementById('entry-note').value; if(!uid||!amt)return alert("তথ্য দিন"); const q=query(collection(db,"deposits"),where("uid","==",uid),where("month","==",m),where("year","==",y),where("status","in",["approved","pending"])); const dup=await getDocs(q);if(!dup.empty)return alert("এই মাসের জমা ইতিমধ্যে আছে"); if(confirm("জমা নিশ্চিত করবেন?")){ const nm=document.getElementById('entry-name').options[document.getElementById('entry-name').selectedIndex].text; await addDoc(collection(db,"deposits"),{uid,name:nm,amount:amt,month:m,year:y,method:document.getElementById('entry-method').value,note:nt,depositDate:dt,status:'approved',date:new Date(),submittedBy:'admin'}); await updateDoc(doc(db,"users",uid),{totalDeposit:increment(amt)}); await updateUserDue(uid); document.getElementById('entry-modal').style.display='none'; document.getElementById('receipt-modal').style.display='flex'; if(document.getElementById('admin-logo-view').src)document.getElementById('rec-logo').src=document.getElementById('admin-logo-view').src;if(document.getElementById('admin-title-view').innerText)document.getElementById('rec-org-name').innerText=document.getElementById('admin-title-view').innerText;document.getElementById('rec-name').innerText=nm;document.getElementById('rec-date').innerText=dt;document.getElementById('rec-amount').innerText=amt;document.getElementById('rec-month').innerText=`${m} ${y}`;document.getElementById('rec-note').innerText=nt||"নাই";document.getElementById('rec-method').innerText=document.getElementById('entry-method').value;loadStats()}};
         document.getElementById('btn-recalc-all').onclick=async()=>{if(!confirm("সতর্কতা: এটি সকল মেম্বারের ডিউ নতুন করে হিসাব করবে। এটি সময় নিতে পারে। নিশ্চিত?"))return;const e=await getExp();const s=await getDocs(collection(db,"users"));const p=[];s.forEach(d=>{if(d.data().role!=='admin')p.push(updateDoc(doc(db,"users",d.id),{totalDue:e-(d.data().totalDeposit||0)}))});await Promise.all(p);alert("সকল মেম্বারের ডিউ আপডেট হয়েছে");location.reload()};
         document.getElementById('btn-app-config').onclick=async()=>{document.getElementById('config-modal').style.display='flex';const d=await getDoc(doc(db,"config","appSettings"));if(d.exists())document.getElementById('app-name-input').value=d.data().name||""};
         document.getElementById('btn-save-config').onclick=async()=>{const f=document.getElementById('app-logo-file').files[0],n=document.getElementById('app-name-input').value;let u=null;if(f){const fm=new FormData();fm.append("image",f);const r=await fetch(`https://api.imgbb.com/1/upload?key=${imgbbAPI}`,{method:"POST",body:fm});const d=await r.json();u=d.data.url}const dt={name:n};if(u)dt.logo=u;await setDoc(doc(db,"config","appSettings"),dt,{merge:true});alert("সেভ হয়েছে");location.reload()};
@@ -487,4 +663,4 @@
         document.getElementById('logout-btn').onclick=()=>signOut(auth).then(()=>window.location.href="index.html");
     </script>
 </body>
-                                                                                                                               </html>
+                                                                                                                                                                                     </html>
